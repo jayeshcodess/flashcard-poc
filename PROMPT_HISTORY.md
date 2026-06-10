@@ -332,4 +332,54 @@ Write the content using high-level technical Markdown directly into the `IMPLEME
 
 ---
 
+## Prompt #13 — Make Personas Generic
+
+- **Timestamp:** 2026-06-10T16:06:41+05:30
+- **Artifacts Updated:** `agent/personas/persona_frontend.md`, `agent/personas/persona_backend_api.md`, `agent/personas/persona_qa.md`, `agent/personas/persona_devops.md`
+
+```
+do 1 thing make all the files generic and not project specific
+```
+
+---
+
+## Prompt #14 — Complete Implementation of Application Layers
+
+- **Timestamp:** 2026-06-10T16:18:32+05:30
+- **Artifacts Updated:** `src/utils/apiService.ts`, `src/components/FlashcardUI.tsx`, `src/components/NavigationOverlay.tsx`
+
+```
+[ROLE]
+You are a Full-Stack Developer 
+
+[TASK]
+Complete the implementation of the FlashGenius application within the `./flashgenius-app/` directory by generating the remaining modular files required for a fully functional, running system. 
+
+[WORKSPACE CONTEXT ALIGNMENT]
+You must read, cross-reference, and respect the specifications inside these exact workspace files before writing any code:
+1.  @[agent/personas/persona_frontend.md]
+2. @[agent/personas/persona_backend_api.md]
+3. @[agent/PRD.md]
+4. @[agent/KPI.md]
+5. @[agent/PROJECT_BOUNDARY.md]
+6. @[agent/PROJECT_SCOPE.md]
+7. @[IMPLEMENTATION_WALKTHROUGH.md]
+
+[IMPLEMENTATION REQUIREMENTS]
+Generate the remaining core application layers cleanly using TypeScript and Tailwind CSS:
+1. **API Utility Engine (`src/utils/apiService.ts`)**
+2. **Interactive Presentation UI (`src/components/FlashcardUI.tsx`)**
+3. **Navigation Mechanics (`src/components/NavigationOverlay.tsx`)**
+```
+
+---
+
+## User Manual Modifications — Gemini Migration & Local Storage implementation
+
+- **Timestamp:** 2026-06-10T17:45:00+05:30
+- **Artifacts Updated:** `app/page.tsx`, `app/globals.css`, `utils/apiService.ts`, `IMPLEMENTATION_WALKTHROUGH.md`, `PROMPT_HISTORY.md`
+- **Description:** The user manually updated the application to use the Gemini API (`gemini-2.5-flash`) instead of OpenAI. User also manually implemented deck saving/loading via local storage in `page.tsx`, and added a Toast and ConfirmDialog UI.
+
+---
+
 <!-- NEXT PROMPT: Append new entries below this line -->
