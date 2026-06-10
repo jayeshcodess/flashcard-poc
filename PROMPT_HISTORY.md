@@ -382,4 +382,33 @@ Generate the remaining core application layers cleanly using TypeScript and Tail
 
 ---
 
+## Prompt #15 — Knowledge Transfer (KT) Document Generation
+
+- **Timestamp:** 2026-06-10T18:10:51+05:30
+- **Artifacts Updated:** `flashgenius-app/KT_SUMMARY.md`
+
+```
+[ROLE]
+You are a Principal Software Architect and Technical Writer.
+
+[TASK]
+Generate a highly detailed Knowledge Transfer (KT) Summary Document and write it directly to the workspace filesystem as `flashgenius-app/KT_SUMMARY.md`. This file will serve as the onboarding blueprint for new engineering team members.
+
+[CONTEXT]
+- Project: FlashGenius
+- Architectural Reality: Purely stateless client-side lifecycle. 0% data persistence. No database, no local storage. Everything runs on volatile React component states in memory and communicates directly via client browser fetch calls to the OpenAI Chat Completions API.
+- Current Status: 100% Fully Functional.
+
+[FORMAT]
+Write the content using structured, technical Markdown. Avoid high-level generic descriptions; write specific implementation details. The document must strictly include the following 6 sections:
+1. Project Mission & Core Architecture
+2. In-Memory State & Lifecycle Management
+3. API Contract & Payload Pipeline
+4. Component Topology & UI Architecture
+5. High-Performance UX & CSS Mechanics
+6. Developer Verification & Hard Boundaries
+```
+
+---
+
 <!-- NEXT PROMPT: Append new entries below this line -->
