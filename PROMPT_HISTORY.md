@@ -411,4 +411,17 @@ Write the content using structured, technical Markdown. Avoid high-level generic
 
 ---
 
+## Prompt #16 — Update KT Document for Gemini and Local Storage
+
+- **Timestamp:** 2026-06-10T18:14:38+05:30
+- **Artifacts Updated:** `KT_SUMMARY.md`, `PROMPT_HISTORY.md`
+
+```
+make these changes we are using gemini not open api @[KT_SUMMARY.md] see  @[flashgenius-app/utils/apiService.ts]
+
+also maintain prompt history
+```
+
+---
+
 <!-- NEXT PROMPT: Append new entries below this line -->
