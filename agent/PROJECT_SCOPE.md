@@ -23,7 +23,7 @@ Deliver a fully working desktop Web-only Proof of Concept (POC) that satisfies t
 ## 2. Tech Stack Details
 
 ### 2.1 Core Technologies
-- **Core Stack:** React + OpenAI API
+- **Core Stack:** React + Gemini API
 - **Animations:** CSS flip animation for flashcard interactions
 - **Data Storage:** No database needed (fully client-side storage)
 
@@ -32,7 +32,7 @@ Deliver a fully working desktop Web-only Proof of Concept (POC) that satisfies t
 - **Token Persistence:** Fully client-side storage (`window.localStorage`) under the key `fg_auth_token` to securely handle user-provided API keys without a backend database.
 
 ### 2.3 Generation Layer
-- **Primary Mode:** Client-side LLM API call via `fetch` directly to the OpenAI API from the browser using the stored `fg_auth_token`.
+- **Primary Mode:** Client-side LLM API call via `fetch` directly to the Gemini API from the browser using the stored `fg_auth_token`.
 - **Fallback Mode:** A local, deterministic JavaScript fallback function that parses text into 5 static fallback cards if no API token is present, enabling instant offline validation.
 
 ### 2.4 Runtime Environment
@@ -74,10 +74,10 @@ Deliver a fully working desktop Web-only Proof of Concept (POC) that satisfies t
 | Component | Description |
 |---|---|
 | **Textarea Input** | A single multi-line text input block accepting pasted study notes (50–10,000 characters). |
-| **Generation Button** | An explicit action trigger that sends the validated text to the OpenAI API via a client-side `fetch` call and receives 5 structured Q&A objects. |
+| **Generation Button** | An explicit action trigger that sends the validated text to the Gemini API via a client-side `fetch` call and receives 5 structured Q&A objects. |
 | **Flip Card Element** | An interactive card component with a CSS flip animation toggling between the question (front) and answer (back) on click. |
 | **Navigation Controls** | Previous/Next buttons for cycling through the 5 generated cards, with a progress indicator ("Card X of 5"). |
-| **Direct API Fetch** | Browser-based `fetch` calls routed directly to the OpenAI Chat Completions endpoint. |
+| **Direct API Fetch** | Browser-based `fetch` calls routed directly to the Gemini API endpoint. |
 
 ---
 

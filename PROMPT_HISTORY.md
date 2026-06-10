@@ -22,7 +22,7 @@ Generate a comprehensive Product Requirements Document (PRD.md) based strictly o
 - Business Problem: Students struggle to revise notes before exams. A teacher wants to paste any text or notes and auto-generate flashcards (question + answer pairs) from it.
 - MVP Scope (What to build):
   * Paste notes textarea
-  * Generate flashcards button (React + OpenAI API)
+  * Generate flashcards button (React + Gemini API)
   * CSS flip animation (front/back)
   * No database needed (fully client-side storage)
 - POC Goal (Prove This Works): Show: paste a paragraph, get 5 flashcards, flip them in the UI
@@ -82,7 +82,7 @@ Analyze the provided project context and generate a comprehensive KPI.md documen
 - Business Problem: Students struggle to revise notes before exams. A teacher wants to paste any text or notes and auto-generate flashcards (question + answer pairs) from it.
 - MVP Scope (What to build):
   * Paste notes textarea
-  * Generate flashcards button (React + OpenAI API)
+  * Generate flashcards button (React + Gemini API)
   * CSS flip animation (front/back)
   * No database needed (fully client-side storage)
 - POC Goal (Prove This Works): Show: paste a paragraph, get 5 flashcards, flip them in the UI
@@ -213,7 +213,7 @@ Synthesize PRD, KPI, and token protocol into a single source of truth.
 
 [CONTEXT]
 - Tech Stack: HTML5, Vanilla CSS3, Vanilla JavaScript (ES2020+)
-- MVP Scope: Paste notes textarea, generate flashcards button (React + OpenAI API), CSS flip animation (front/back), no database needed (client-side storage).
+- MVP Scope: Paste notes textarea, generate flashcards button (React + Gemini API), CSS flip animation (front/back), no database needed (client-side storage).
 - POC Goal: Paste a paragraph, get 5 flashcards, flip them with CSS animation, verify 1 demo deck saved client-side.
 
 [FORMAT]
@@ -241,7 +241,7 @@ Generate a definitive project scope document (`project_scope.md`) for the FlashG
 - Business Problem: Students struggle to revise notes before exams. A teacher wants to paste any text or notes and auto-generate flashcards (question + answer pairs) from it.
 - MVP Scope: Paste notes textarea, generate flashcards button, CSS flip animation (front/back), and no database needed (fully client-side storage).
 - Platform Constraints: Desktop/Laptop Web-only interface. Strictly NO mobile/phone application layouts or responsive native wrappers.
-- Tech Stack: React, Next.js (App Router client-side execution), Tailwind CSS, Web Storage API (localStorage), OpenAI API.
+- Tech Stack: React, Next.js (App Router client-side execution), Tailwind CSS, Web Storage API (localStorage), Gemini API.
 - POC Goal: Paste a paragraph, get 5 flashcards, flip them with CSS animation, and verify 1 demo deck is saved client-side.
 - Unified Constraints: No infrastructure overhead, no server-side folder setup defaults, and absolute adherence to the active Vibe Coding rules (compact style, zero conversational filler, targeted changes).
 
@@ -271,7 +271,7 @@ Synthesize PRD/KPI constraints into a hard engineering contract governing worksp
 
 [CONTEXT]
 - Core Scope: Desktop web-only text-to-flashcard generator. React, Next.js client-side execution, Tailwind CSS.
-- Stateless in-memory application state only, fetching directly from client-side OpenAI API.
+- Stateless in-memory application state only, fetching directly from client-side Gemini API.
 - No database, no localStorage.
 - Active Paradigm: Vibe Coding.
 
@@ -313,7 +313,7 @@ Generate a complete, comprehensive implementation walkthrough document and save 
 [CONTEXT]
 - Project: FlashGenius (Desktop Web-only automated text-to-flashcard generator).
 - Target Stack: React, Next.js ('use client' App Router paradigm), Tailwind CSS.
-- Key Constraint: Absolutely NO database and NO local storage usage. The application must be entirely memory-volatile and stateless, using temporary React states and hitting external Open APIs directly via client-side fetch calls.
+- Key Constraint: Absolutely NO database and NO local storage usage. The application must be entirely memory-volatile and stateless, using temporary React states and hitting external Gemini APIs directly via client-side fetch calls.
 - Active Protocol: Vibe Coding. Use compact formatting and concise code structural representations.
 
 [FORMAT]

@@ -24,7 +24,7 @@ All tokens and session state artifacts are represented as flat key-value pairs w
 | `scope` | `string` | Yes | Permission scope granted by the token. MVP value: `"flashcard:generate"`. Used for client-side gating of UI features. |
 | `status` | `string (enum)` | Yes | Current lifecycle state. Allowed values: `active`, `expired`, `revoked`. Only `active` tokens are used for API calls. |
 | `refresh_token` | `string \| null` | No | Optional opaque refresh token for obtaining a new `api_key` without re-authentication. `null` if the provider does not support refresh flows. |
-| `provider` | `string` | Yes | Identifier of the generation service provider (e.g., `"openai"`, `"gemini"`, `"custom"`). Used to route requests to the correct API handler. |
+| `provider` | `string` | Yes | Identifier of the generation service provider (e.g., `"gemini"`, `"custom"`). Used to route requests to the correct API handler. |
 
 ### Serialization Rules
 

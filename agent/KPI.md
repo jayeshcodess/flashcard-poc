@@ -6,7 +6,7 @@
 
 ## Project Overview
 
-FlashGenius is a single-purpose EdTech tool designed to eliminate the manual effort of flashcard creation during exam preparation. Students and teachers paste unstructured study notes into a textarea, click a single button, and via React + OpenAI API instantly receive a deck of 5 interactive flashcards — each consisting of a question (front) and an answer (back) — rendered with a CSS flip animation optimized for active recall.
+FlashGenius is a single-purpose EdTech tool designed to eliminate the manual effort of flashcard creation during exam preparation. Students and teachers paste unstructured study notes into a textarea, click a single button, and via React + Gemini API instantly receive a deck of 5 interactive flashcards — each consisting of a question (front) and an answer (back) — rendered with a CSS flip animation optimized for active recall.
 
 **Target Users:**
 
