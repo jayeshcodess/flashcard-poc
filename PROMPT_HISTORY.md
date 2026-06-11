@@ -399,4 +399,24 @@ also maintain prompt history
 
 ---
 
+## Prompt #17 — QA Test Automation Implementation
+
+- **Timestamp:** 2026-06-11T11:19:05+05:30
+- **Artifacts Updated:** `package.json`, `jest.config.js`, `jest.setup.js`, `playwright.config.ts`, `__tests__/unit/TextInputEngine.test.tsx`, `__tests__/integration/apiService.test.ts`, `e2e/generation-flow.spec.ts`, `e2e/local-storage.spec.ts`, `PROMPT_HISTORY.md`
+
+```
+Act as the Senior QA Automation Engineer (as defined in agent/personas/persona_qa.md). I have a test strategy defined in `agent/test_Cases.md`.
+
+Your task is to fully implement and run the automated test suite for the `flashgenius-app`. Please execute the following steps in order:
+1. Setup Testing Frameworks (Jest, Playwright, React Testing Library)
+2. Implement Unit and Integration Tests (Jest)
+3. Implement E2E Tests (Playwright)
+4. Add Package Scripts
+5. Run the Tests and fix until passing.
+
+also update prompt history
+```
+
+---
+
 <!-- NEXT PROMPT: Append new entries below this line -->
