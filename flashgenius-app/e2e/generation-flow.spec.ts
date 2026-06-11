@@ -9,13 +9,16 @@ test.describe('Generation Flow and Deck Review', () => {
         candidates: [{
           content: {
             parts: [{
-              text: JSON.stringify([
-                { id: '1', question: 'Question 1', answer: 'Answer 1' },
-                { id: '2', question: 'Question 2', answer: 'Answer 2' },
-                { id: '3', question: 'Question 3', answer: 'Answer 3' },
-                { id: '4', question: 'Question 4', answer: 'Answer 4' },
-                { id: '5', question: 'Question 5', answer: 'Answer 5' }
-              ])
+              text: JSON.stringify({
+                topic: 'React Hooks',
+                cards: [
+                  { id: '1', question: 'Question 1', answer: 'Answer 1' },
+                  { id: '2', question: 'Question 2', answer: 'Answer 2' },
+                  { id: '3', question: 'Question 3', answer: 'Answer 3' },
+                  { id: '4', question: 'Question 4', answer: 'Answer 4' },
+                  { id: '5', question: 'Question 5', answer: 'Answer 5' }
+                ]
+              })
             }]
           }
         }]
@@ -34,11 +37,6 @@ test.describe('Generation Flow and Deck Review', () => {
     const textarea = page.getByPlaceholder(/Paste your notes here/i);
     await textarea.fill('a'.repeat(60)); // Ensure it's >= 50 chars
 
-    // Set a dummy API key using evaluate to bypass the UI input which was removed,
-    // wait, we can't set NEXT_PUBLIC_GEMINI_API_KEY at runtime easily via Playwright.
-    // However, our app will just fall back to mock generation if the env var isn't set,
-    // OR if it is set during build, it will hit our mock route. Both are fine!
-    
     // Generate
     await page.getByRole('button', { name: /generate flashcards/i }).click();
 

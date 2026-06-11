@@ -1,5 +1,15 @@
 # Knowledge Transfer (KT) Summary: FlashGenius
 
+## Technical Stack Breakdown
+- **Framework:** Next.js (App Router, static export configured)
+- **Library:** React (Functional Components, Hooks)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS (Vanilla utilities, custom 3D transformations)
+- **External API:** Google Gemini API (`gemini-3.5-flash`) via native browser `fetch`
+- **Persistence:** Local Storage (`window.localStorage`) for client-side multi-deck saving (max 10 decks)
+- **Testing:** Jest, React Testing Library (Unit/Integration), Playwright (E2E)
+
+
 ## 1. Project Mission & Core Architecture
 FlashGenius is a web-based automated study utility designed to instantly transform raw text notes into interactive flashcards. A serverless, client-side architecture was intentionally chosen for the MVP to enforce a lean, highly deterministic Proof of Concept (POC). By operating entirely in the browser and avoiding backend infrastructure, the project eliminates server hosting costs, sidesteps database schema migrations, and avoids complex data privacy regulations. The application acts as a pure conduit between the user's browser and the external Gemini API.
 

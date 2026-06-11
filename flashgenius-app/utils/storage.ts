@@ -1,4 +1,5 @@
-const STORAGE_KEY = "flashgenius_saved_deck";
+const STORAGE_KEY = "flashgenius_saved_decks";
+const OLD_STORAGE_KEY = "flashgenius_saved_deck"; // Legacy key for migration
 
 export interface SavedDeck {
   deck_id: string;
@@ -22,37 +23,60 @@ function isStorageAvailable(): boolean {
 }
 
 /**
- * Retrieve the saved deck from localStorage, or null if none exists.
+ * Retrieve all saved decks from localStorage.
  */
-export function loadDeck(): SavedDeck | null {
-  if (!isStorageAvailable()) return null;
+export function loadDecks(): SavedDeck[] {
+  if (!isStorageAvailable()) return [];
+  
+  let decks: SavedDeck[] = [];
+
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-    const parsed: SavedDeck = JSON.parse(raw);
-    // Basic shape validation
-    if (
-      !parsed.deck_id ||
-      !Array.isArray(parsed.cards) ||
-      parsed.cards.length === 0
-    ) {
-      return null;
+    if (raw) {
+      decks = JSON.parse(raw);
+      if (!Array.isArray(decks)) decks = [];
     }
-    return parsed;
   } catch {
-    return null;
+    decks = [];
   }
+
+  // Legacy migration
+  try {
+    const oldRaw = localStorage.getItem(OLD_STORAGE_KEY);
+    if (oldRaw) {
+      const oldDeck = JSON.parse(oldRaw);
+      if (oldDeck && oldDeck.deck_id && !decks.some(d => d.deck_id === oldDeck.deck_id)) {
+        decks.push(oldDeck);
+        // Persist migration and remove old key
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
+        localStorage.removeItem(OLD_STORAGE_KEY);
+      }
+    }
+  } catch {}
+
+  // Basic validation
+  return decks.filter(
+    (deck) => deck.deck_id && Array.isArray(deck.cards) && deck.cards.length > 0
+  );
 }
 
 /**
- * Check if a saved deck already exists in localStorage.
+ * Retrieve a specific saved deck by ID.
+ */
+export function loadDeck(deck_id: string): SavedDeck | null {
+  const decks = loadDecks();
+  return decks.find(d => d.deck_id === deck_id) || null;
+}
+
+/**
+ * Check if any saved deck exists.
  */
 export function hasSavedDeck(): boolean {
-  return loadDeck() !== null;
+  return loadDecks().length > 0;
 }
 
 /**
- * Persist a deck to localStorage. Overwrites any existing deck.
+ * Persist a deck to localStorage. Maximum of 10 decks allowed.
  */
 export function saveDeck(
   cards: { id: string; question: string; answer: string }[],
@@ -64,6 +88,14 @@ export function saveDeck(
     );
   }
 
+  const decks = loadDecks();
+  
+  if (decks.length >= 10) {
+    throw new Error(
+      "You can only save up to 10 decks. Please delete an old deck first."
+    );
+  }
+
   const deck: SavedDeck = {
     deck_id: `deck-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
     title: title ?? `Study Deck — ${new Date().toLocaleDateString()}`,
@@ -71,11 +103,13 @@ export function saveDeck(
     saved_at: new Date().toISOString(),
   };
 
+  decks.push(deck);
+
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(deck));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
   } catch {
     throw new Error(
-      "Storage is full. Could not save the deck. Try clearing browser data."
+      "Storage is full. Replace an existing deck to save this one?"
     );
   }
 
@@ -83,11 +117,12 @@ export function saveDeck(
 }
 
 /**
- * Remove the saved deck from localStorage.
+ * Remove a specific saved deck from localStorage.
  */
-export function deleteDeck(): void {
+export function deleteDeck(deck_id: string): void {
   if (!isStorageAvailable()) return;
-  localStorage.removeItem(STORAGE_KEY);
+  const decks = loadDecks().filter(d => d.deck_id !== deck_id);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(decks));
 }
 
 /**

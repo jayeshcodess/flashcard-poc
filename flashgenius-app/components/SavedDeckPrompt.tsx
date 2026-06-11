@@ -6,12 +6,14 @@ interface SavedDeckPromptProps {
   savedDeck: SavedDeck;
   onLoad: () => void;
   onCreateNew: () => void;
+  onDelete: () => void;
 }
 
 export default function SavedDeckPrompt({
   savedDeck,
   onLoad,
   onCreateNew,
+  onDelete,
 }: SavedDeckPromptProps) {
   const savedDate = new Date(savedDeck.saved_at).toLocaleDateString("en-US", {
     month: "short",
@@ -72,6 +74,14 @@ export default function SavedDeckPrompt({
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           Create New Deck
+        </button>
+      </div>
+      <div className="text-center pt-2">
+        <button
+          onClick={onDelete}
+          className="text-xs text-red-500 hover:text-red-700 underline underline-offset-2 transition-colors cursor-pointer"
+        >
+          Delete Saved Deck
         </button>
       </div>
     </div>

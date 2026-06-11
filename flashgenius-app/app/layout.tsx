@@ -18,6 +18,8 @@ export const metadata: Metadata = {
     "Paste your study notes and instantly generate interactive flashcards powered by AI.",
 };
 
+import DebugDashboard from "@/components/DebugDashboard";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,6 +32,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-[#FAFAFA] text-[#1A1A2E] font-[family-name:var(--font-inter)]">
         {children}
+        <DebugDashboard />
       </body>
     </html>
   );

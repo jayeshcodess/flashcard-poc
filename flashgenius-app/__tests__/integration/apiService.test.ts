@@ -10,13 +10,16 @@ describe('apiService', () => {
         content: {
           parts: [
             {
-              text: JSON.stringify([
-                { id: '1', question: 'Q1', answer: 'A1' },
-                { id: '2', question: 'Q2', answer: 'A2' },
-                { id: '3', question: 'Q3', answer: 'A3' },
-                { id: '4', question: 'Q4', answer: 'A4' },
-                { id: '5', question: 'Q5', answer: 'A5' },
-              ]),
+              text: JSON.stringify({
+                topic: 'Test Topic',
+                cards: [
+                  { id: '1', question: 'Q1', answer: 'A1' },
+                  { id: '2', question: 'Q2', answer: 'A2' },
+                  { id: '3', question: 'Q3', answer: 'A3' },
+                  { id: '4', question: 'Q4', answer: 'A4' },
+                  { id: '5', question: 'Q5', answer: 'A5' },
+                ]
+              }),
             },
           ],
         },
@@ -53,7 +56,8 @@ describe('apiService', () => {
         body: expect.stringContaining('test study notes'),
       })
     );
-    expect(result).toHaveLength(5);
+    expect(result.cards).toHaveLength(5);
+    expect(result.topic).toBe('Test Topic');
   });
 
   it('TC-API-02: Validate fallback mock generation triggers when no API key is provided', async () => {
@@ -65,8 +69,9 @@ describe('apiService', () => {
     const result = await generateFlashcards(testNotes);
     
     expect(global.fetch).not.toHaveBeenCalled();
-    expect(result).toHaveLength(5);
-    expect(result[0].id).toContain('mock-');
+    expect(result.cards).toHaveLength(5);
+    expect(result.topic).toBe('First Long Sentence');
+    expect(result.cards[0].id).toContain('mock-');
   });
 
   it('TC-API-03: Verify 30-second abort controller successfully cancels stalled requests', async () => {

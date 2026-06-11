@@ -8,12 +8,13 @@ import SavedDeckPrompt from "@/components/SavedDeckPrompt";
 import Toast from "@/components/Toast";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import {
-  loadDeck,
+  loadDecks,
   saveDeck,
-  hasSavedDeck,
   canSave,
-  type SavedDeck,
 } from "@/utils/storage";
+import { generateFlashcards } from "@/utils/apiService";
+import Link from "next/link";
+import { debugStore } from "@/utils/debugStore";
 
 export type Flashcard = {
   id: string;
@@ -23,11 +24,12 @@ export type Flashcard = {
 
 export type LoadingState = "idle" | "loading" | "error";
 
-type AppView = "checking" | "saved-prompt" | "input" | "deck";
+type AppView = "checking" | "input" | "deck";
 
 export default function Page() {
   const [inputText, setInputText] = useState("");
   const [deck, setDeck] = useState<Flashcard[]>([]);
+  const [deckTopic, setDeckTopic] = useState("");
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [loadingState, setLoadingState] = useState<LoadingState>("idle");
@@ -41,11 +43,7 @@ export default function Page() {
     "success"
   );
 
-  // Confirm dialog state
-  const [confirmVisible, setConfirmVisible] = useState(false);
-
-  // Saved deck reference (for prompt)
-  const [savedDeckData, setSavedDeckData] = useState<SavedDeck | null>(null);
+  const [hasDecks, setHasDecks] = useState(false);
 
   const showToast = useCallback(
     (message: string, type: "success" | "error" | "info" = "success") => {
@@ -56,15 +54,20 @@ export default function Page() {
     []
   );
 
-  // On mount: check for saved deck
+  // On mount: check for saved decks
   useEffect(() => {
-    const saved = loadDeck();
-    if (saved) {
-      setSavedDeckData(saved);
-      setAppView("saved-prompt");
-    } else {
-      setAppView("input");
+    const saved = loadDecks();
+    setHasDecks(saved.length > 0);
+    
+    // Update dashboard metrics on mount
+    if (debugStore) {
+      debugStore.update({
+        localStorageStatus: canSave() ? "Available" : "Unavailable",
+        savedDeckPresence: saved.length > 0 ? "Yes" : "No",
+      });
     }
+
+    setAppView("input");
   }, []);
 
   // Keyboard navigation for deck view
@@ -83,27 +86,47 @@ export default function Page() {
         setIsFlipped(false);
       } else if (e.key === " " || e.key === "Enter") {
         e.preventDefault();
+        if (debugStore) debugStore.recordFlip(deck[currentCardIndex].id);
         setIsFlipped((f) => !f);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [appView, deck.length, currentCardIndex]);
+  }, [appView, deck, currentCardIndex]);
 
   const handleGenerate = async () => {
     setLoadingState("loading");
     setErrorMessage("");
+    const startTime = Date.now();
 
     try {
-      const { generateFlashcards } = await import("@/utils/apiService");
-      const cards = await generateFlashcards(inputText.trim());
+      const result = await generateFlashcards(inputText.trim());
+      const cards = result.cards;
+      const topic = result.topic;
+      
+      const durationSecs = (Date.now() - startTime) / 1000;
+      if (debugStore) {
+        debugStore.update({
+          generationHealth: durationSecs > 3 ? "Yellow" : "Green",
+          lastGenerationDuration: durationSecs,
+          cardsGenerated: (debugStore.metrics.cardsGenerated || 0) + cards.length,
+        });
+      }
+
       setDeck(cards);
+      setDeckTopic(topic);
       setCurrentCardIndex(0);
       setIsFlipped(false);
       setLoadingState("idle");
       setAppView("deck");
     } catch (err) {
+      if (debugStore) {
+        debugStore.update({
+          generationHealth: "Red",
+          lastGenerationDuration: (Date.now() - startTime) / 1000,
+        });
+      }
       setErrorMessage(
         err instanceof Error ? err.message : "Generation failed. Please retry."
       );
@@ -120,45 +143,29 @@ export default function Page() {
       return;
     }
 
-    // Check if a deck already exists
-    if (hasSavedDeck()) {
-      setConfirmVisible(true);
-      return;
-    }
-
-    performSave();
-  };
-
-  const performSave = () => {
     try {
-      saveDeck(deck);
+      saveDeck(deck, deckTopic);
+      setHasDecks(true);
+      if (debugStore) {
+        debugStore.update({
+          savedDeckPresence: "Yes",
+          decksSaved: (debugStore.metrics.decksSaved || 0) + 1,
+        });
+      }
       showToast("Deck saved successfully!", "success");
-      setConfirmVisible(false);
     } catch (err) {
       showToast(
         err instanceof Error ? err.message : "Failed to save deck.",
         "error"
       );
-      setConfirmVisible(false);
     }
   };
 
-  const handleLoadSaved = () => {
-    if (savedDeckData) {
-      setDeck(savedDeckData.cards);
-      setCurrentCardIndex(0);
-      setIsFlipped(false);
-      setAppView("deck");
-      showToast("Saved deck loaded!", "info");
-    }
-  };
 
-  const handleCreateNew = () => {
-    setAppView("input");
-  };
 
   const handleNewDeck = () => {
     setDeck([]);
+    setDeckTopic("");
     setCurrentCardIndex(0);
     setIsFlipped(false);
     setInputText("");
@@ -186,7 +193,7 @@ export default function Page() {
       <main className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-3xl">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="relative text-center mb-8">
             <h1 className="text-4xl font-bold tracking-tight mb-1">
               <span className="bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] bg-clip-text text-transparent">
                 Flash
@@ -196,16 +203,17 @@ export default function Page() {
             <p className="text-[#4A4A6A] text-sm">
               Paste your notes. Generate flashcards. Study smarter.
             </p>
+            {hasDecks && (
+              <div className="absolute top-0 right-0">
+                <Link
+                  href="/decks"
+                  className="text-sm font-medium text-[#4F46E5] hover:text-[#4338CA] bg-indigo-50 px-4 py-2 rounded-xl transition-colors"
+                >
+                  My Decks →
+                </Link>
+              </div>
+            )}
           </div>
-
-          {/* View: Saved Deck Prompt */}
-          {appView === "saved-prompt" && savedDeckData && (
-            <SavedDeckPrompt
-              savedDeck={savedDeckData}
-              onLoad={handleLoadSaved}
-              onCreateNew={handleCreateNew}
-            />
-          )}
 
           {/* View: Text Input */}
           {appView === "input" && (
@@ -286,16 +294,6 @@ export default function Page() {
         onDismiss={() => setToastVisible(false)}
       />
 
-      {/* Replace Existing Deck Confirmation */}
-      <ConfirmDialog
-        visible={confirmVisible}
-        title="Replace Existing Deck?"
-        message="You already have a saved deck. Saving this new deck will replace the previous one. This action cannot be undone."
-        confirmLabel="Replace Existing Deck"
-        cancelLabel="Cancel"
-        onConfirm={performSave}
-        onCancel={() => setConfirmVisible(false)}
-      />
     </>
   );
 }

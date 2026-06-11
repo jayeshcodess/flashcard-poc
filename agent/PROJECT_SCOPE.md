@@ -16,7 +16,7 @@ Deliver a fully working desktop Web-only Proof of Concept (POC) that satisfies t
 |---|---|---|
 | 1 | Flashcards generate from text | Pasting text and clicking "Generate" produces exactly 5 Q&A flashcards. |
 | 2 | CSS flip animation works | Every card responds to a click with a front-to-back CSS flip transition. |
-| 3 | No database needed | A single deck persists fully client-side, surviving a full page reload without a database. |
+| 3 | No database needed | Up to 10 decks persist fully client-side in localStorage, surviving a full page reload without a database. |
 
 ---
 

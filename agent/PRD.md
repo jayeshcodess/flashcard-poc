@@ -76,15 +76,15 @@ The end-to-end user journey proceeds through five sequential stages:
 ### Stage 4 — Saving the Deck
 
 14. Below the deck view, a **"Save Deck"** button is displayed.
-15. The user clicks **"Save Deck"**, and the system persists the entire deck (all 5 cards with questions and answers) to the browser's local storage.
+15. The user clicks **"Save Deck"**, and the system persists the entire deck (all 5 cards with questions and answers, along with the automatically extracted topic title) to the browser's local storage.
 16. A confirmation toast notification appears: *"Deck saved successfully!"*
-17. If a deck already exists in storage from a prior session, the user is prompted with a choice: **"Replace existing deck"** or **"Cancel"**.
+17. The user can save up to 10 decks. If the limit is reached, they must delete an old deck before saving a new one.
 
 ### Stage 5 — Returning to Saved Decks
 
-18. On subsequent visits, if a saved deck is detected in local storage, the user is presented with an option to **"Load Saved Deck"** or **"Create New Deck"**.
-19. Selecting **"Load Saved Deck"** restores the previously saved flashcards into the deck view for continued review.
-20. Selecting **"Create New Deck"** returns the user to Stage 1 with an empty text area.
+18. On subsequent visits, if saved decks are detected in local storage, a **"My Decks"** link is displayed in the header.
+19. Selecting **"My Decks"** navigates the user to a dedicated page listing all saved decks with their card counts and creation dates.
+20. The user can click on any deck to open it in a separate study view, or delete it to free up space.
 
 ---
 
@@ -135,7 +135,7 @@ All endpoints return errors in a consistent envelope:
 | 3 | **Extremely long input exceeding maximum** | User pastes an entire textbook chapter or document exceeding 10,000 characters. | The textarea enforces a hard limit of 10,000 characters. Characters beyond the limit are not accepted. The counter displays: *"10,000 / 10,000 — Maximum reached."* If the user pastes content exceeding the limit, only the first 10,000 characters are retained and the user is notified via a toast: *"Input was trimmed to 10,000 characters."* |
 | 4 | **Non-informational or gibberish text** | User pastes random characters ("aslkdjfalksjdf"), code snippets with no semantic meaning, or a single word repeated 100 times. | The generation service performs a content-density check. If the text lacks sufficient informational variety to produce meaningful Q&A pairs, the API returns a `422 UNPROCESSABLE_CONTENT` error. The UI shows: *"We couldn't extract enough meaningful content from your notes. Try pasting more detailed study material."* |
 | 5 | **Duplicate generation request (double-click)** | User rapidly clicks the "Generate Flashcards" button multiple times before the first request completes. | The button is immediately disabled and enters a loading state upon the first click. Subsequent clicks are ignored until the generation request resolves (success or failure). No duplicate requests are dispatched. |
-| 6 | **Browser local storage unavailable or full** | User's browser has local storage disabled (private browsing mode) or the storage quota is exceeded. | Before attempting to save, the system checks local storage availability. If unavailable, the "Save Deck" button displays a tooltip: *"Saving is not available in your current browser mode."* If storage is full, the user is prompted: *"Storage is full. Replace existing deck to save this one?"* |
+| 6 | **Browser local storage unavailable or full** | User's browser has local storage disabled (private browsing mode) or the storage quota is exceeded. | Before attempting to save, the system checks local storage availability. If unavailable, the "Save Deck" button displays a tooltip: *"Saving is not available in your current browser mode."* If storage is full or the 10-deck limit is reached, the user is prompted: *"You can only save up to 10 decks. Please delete an old deck first."* |
 | 7 | **Network failure during generation** | The user's internet connection drops after clicking "Generate Flashcards" but before receiving a response. | The request times out after 30 seconds. The UI exits the loading state and displays an error message: *"Generation failed — please check your connection and try again."* A "Retry" button is shown. The original text remains in the textarea. |
 | 8 | **Pasting formatted or rich text** | User copies text from a word processor, PDF, or webpage that includes HTML tags, special formatting, or embedded objects. | The textarea strips all formatting on paste and accepts only plain text. Hidden HTML tags, inline styles, and non-printable characters are sanitized. The user sees only clean, unformatted text in the input field. |
 
@@ -181,7 +181,7 @@ The following features and capabilities are **explicitly out of scope** for Flas
 | # | Out-of-Scope Item | Rationale |
 |---|---|---|
 | 1 | **User authentication and accounts** | The MVP operates as a stateless, single-user tool. There are no login flows, user profiles, or multi-device sync. All data is local to the browser. |
-| 2 | **Multiple deck management** | The MVP supports saving exactly one deck at a time. A deck library, folder organization, tagging, or search across multiple saved decks is deferred to a future version. |
+| 2 | **Multiple deck management** | The MVP supports saving up to 10 decks at a time in local storage. Advanced features like a deck library with folder organization, tagging, or search are deferred to a future version. |
 | 3 | **Custom card count selection** | The MVP generates a fixed count of 5 flashcards per submission. User-configurable card counts (e.g., 3, 10, 20) are not supported. |
 | 4 | **Image, audio, or file upload input** | The MVP accepts only plain text pasted into the textarea. It does not support image-based OCR, audio transcription, PDF parsing, or file drag-and-drop. |
 | 5 | **Flashcard editing or manual creation** | Users cannot modify generated Q&A content or manually author individual cards. All cards are system-generated and immutable in the MVP. |

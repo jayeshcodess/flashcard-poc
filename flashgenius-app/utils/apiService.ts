@@ -1,7 +1,12 @@
-interface Flashcard {
+export interface Flashcard {
   id: string;
   question: string;
   answer: string;
+}
+
+export interface GenerationResult {
+  cards: Flashcard[];
+  topic: string;
 }
 
 /**
@@ -10,7 +15,7 @@ interface Flashcard {
  */
 export async function generateFlashcards(
   text: string
-): Promise<Flashcard[]> {
+): Promise<GenerationResult> {
   const geminiApiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY ?? "";
 
   if (geminiApiKey && geminiApiKey.trim().length > 0) {
@@ -23,9 +28,9 @@ export async function generateFlashcards(
 async function generateWithGemini(
   text: string,
   apiKey: string
-): Promise<Flashcard[]> {
+): Promise<GenerationResult> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 90000);
+  const timeout = setTimeout(() => controller.abort(), 30000);
 
   try {
     const response = await fetch(
@@ -42,7 +47,11 @@ async function generateWithGemini(
               role: "user",
               parts: [
                 {
-                  text: `You are a study flashcard generator. Given the user's study notes, generate exactly 5 flashcards as a JSON array. Each flashcard must have:
+                  text: `You are a study flashcard generator. Given the user's study notes:
+1. Generate exactly 5 flashcards.
+2. Generate a short, 2-3 word topic summary that represents these notes to use as the deck title.
+
+Return the response as a JSON object containing a "topic" string and a "cards" array. Each flashcard in the array must have:
 - "id": a unique string identifier (e.g. "card-1", "card-2", etc.)
 - "question": a clear, concise study question derived from the notes
 - "answer": a factual, complete answer to the question
@@ -56,16 +65,23 @@ ${text}`
           generationConfig: {
             responseMimeType: "application/json",
             responseSchema: {
-              type: "ARRAY",
-              items: {
-                type: "OBJECT",
-                properties: {
-                  id: { type: "STRING" },
-                  question: { type: "STRING" },
-                  answer: { type: "STRING" }
-                },
-                required: ["id", "question", "answer"]
-              }
+              type: "OBJECT",
+              properties: {
+                topic: { type: "STRING" },
+                cards: {
+                  type: "ARRAY",
+                  items: {
+                    type: "OBJECT",
+                    properties: {
+                      id: { type: "STRING" },
+                      question: { type: "STRING" },
+                      answer: { type: "STRING" }
+                    },
+                    required: ["id", "question", "answer"]
+                  }
+                }
+              },
+              required: ["topic", "cards"]
             }
           }
         }),
@@ -94,15 +110,20 @@ ${text}`
       throw new Error("Empty response from Gemini. Please retry.");
     }
 
-    const parsed: Flashcard[] = JSON.parse(content);
+    let parsed: GenerationResult;
+    try {
+      parsed = JSON.parse(content);
+    } catch {
+      throw new Error("We couldn't extract enough meaningful content from your notes.");
+    }
 
-    if (!Array.isArray(parsed) || parsed.length !== 5) {
+    if (!parsed.topic || !Array.isArray(parsed.cards) || parsed.cards.length !== 5) {
       throw new Error(
-        "Invalid response format: expected exactly 5 flashcards."
+        "Invalid response format: expected a topic and exactly 5 flashcards."
       );
     }
 
-    for (const card of parsed) {
+    for (const card of parsed.cards) {
       if (!card.id || !card.question || !card.answer) {
         throw new Error(
           "Invalid card structure: each card must have id, question, and answer."
@@ -122,8 +143,7 @@ ${text}`
   }
 }
 
-
-function mockGenerateFlashcards(text: string): Flashcard[] {
+function mockGenerateFlashcards(text: string): GenerationResult {
   const sentences = text
     .replace(/([.?!])\s+/g, "$1|")
     .split("|")
@@ -138,9 +158,18 @@ function mockGenerateFlashcards(text: string): Flashcard[] {
     );
   }
 
-  return sentences.map((sentence, i) => ({
+  const cards = sentences.map((sentence, i) => ({
     id: `mock-${i + 1}`,
     question: `What does the following statement describe? "${sentence.slice(0, 80)}${sentence.length > 80 ? "…" : ""}"`,
     answer: sentence,
   }));
+
+  // Create a mock topic based on the first few words of the text
+  const cleanWords = text.replace(/[^a-zA-Z0-9\s]/g, "").split(/\s+/).filter(Boolean);
+  const topic = cleanWords.slice(0, 3).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ") || "Mock Study Topic";
+
+  return {
+    cards,
+    topic: topic.length > 25 ? topic.slice(0, 25) + "..." : topic
+  };
 }

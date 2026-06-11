@@ -12,11 +12,20 @@ interface FlashcardUIProps {
   onFlip: () => void;
 }
 
+import { debugStore } from "@/utils/debugStore";
+
 export default function FlashcardUI({ card, isFlipped, onFlip }: FlashcardUIProps) {
+  const handleFlip = () => {
+    if (debugStore) {
+      debugStore.recordFlip(card.id);
+    }
+    onFlip();
+  };
+
   return (
     <div
       className="flip-container w-full max-w-[520px] h-[300px] mx-auto cursor-pointer"
-      onClick={onFlip}
+      onClick={handleFlip}
     >
       <div className={`flip-inner ${isFlipped ? "flipped" : ""}`}>
         {/* Front — Question */}

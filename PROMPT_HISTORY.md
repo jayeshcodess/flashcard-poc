@@ -419,4 +419,38 @@ also update prompt history
 
 ---
 
+## Prompt #18 — Add Logs to Results Audit
+
+- **Timestamp:** 2026-06-11T13:09:42+05:30
+- **Artifacts Updated:** `results_audit.md`, `PROMPT_HISTORY.md`
+
+```
+Act as the Senior QA Automation Engineer (as defined in agent/personas/persona_qa.md). I have a test strategy defined in @[agent/test_Cases.md]
+
+Your task is to fully implement and run the automated test suite for the `flashgenius-app`. Please execute the following steps in order:
+1. Setup Testing Frameworks (Jest, Playwright, React Testing Library)
+2. Implement Unit and Integration Tests (Jest)
+3. Implement E2E Tests (Playwright)
+4. Add Package Scripts
+5. Add logs in @[results_audit.md]
+```
+
+---
+
+## Prompt #19 — Update KT Summary with Tech Stack and Flowchart
+
+- **Timestamp:** 2026-06-11T13:15:29+05:30
+- **Artifacts Updated:** `KT_SUMMARY.md`, `PROMPT_HISTORY.md`
+
+```
+Update the KT Summary Document 
+Open the @[KT_SUMMARY.md] file and apply two specific updates:
+
+Tech Stack Section: At the very beginning of the document, add an explicit breakdown of our entire technical stack.
+
+Architectural Flowchart: Right after the stack list, embed a detailed text-based architecture flowchart mapping out the lifecycle of a flashcard from the initial text paste to the 3D card rendering.
+```
+
+---
+
 <!-- NEXT PROMPT: Append new entries below this line -->
