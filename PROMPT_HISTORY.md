@@ -152,46 +152,21 @@ maintain a prompt history file please
 
 ---
 
-## Prompt #4 — Save Token Protocol
+## Prompt #4 — Save Token Protocol (Token Optimization)
 
-- **Timestamp:** 2026-06-10T10:43:10+05:30
-- **Artifact Produced:** `agent/save_token.md`
+- **Timestamp:** 2026-06-10T10:43:10+05:30 (original), 2026-06-11T10:32:11+05:30 (rewritten)
+- **Artifact Produced:** `agent/SAVE_TOKEN.md`
+- **Note:** Originally generated as an API key persistence schema. Rewritten in full to serve its intended purpose: minimizing LLM prompt/completion token consumption during AI-assisted development.
 
 ```
-[ROLE]
-You are a Senior Product Manager and Software Architect.
+Rewrite SAVE_TOKEN.md to focus entirely on saving AI tokens (minimizing LLM usage costs).
+Expand the following 5 rules into detailed sections with numbered sub-rules and rationale:
 
-[TASK]
-Generate a highly focused `save_token.md` protocol document based strictly on the parameters provided in the [CONTEXT] section and following the exact rules in the [FORMAT] section.
-
-[CONTEXT]
-- Domain: EdTech / LLM Integrations
-- Name: FlashGenius
-- Core Feature: Secure persistence of API tokens or session states required for automated flashcard generation.
-- Objective: Define the strict runtime code boundaries and modification protocols for editing authentication state handlers without breaking the local storage footprint.
-
-[FORMAT]
-Generate the output as a clean markdown file (`save_token.md`). The document must begin directly with the following operational rules header verbatim, followed by the specific protocol definitions:
-
-# Save Token Protocol
-
-> **Vibe Coding Protocol Active:**
-> 1. Short-form responses only.
-> 2. No conversational filler or explanations.
-> 3. Provide only the diff or the specific function modified.
-> 4. Do not update secondary files (README, logs, tests) unless requested.
-> 5. Use compact code style (no excessive whitespace/comments).
-
-## 1. Token Serialization Schema
-[Define a concise, key-value table structure for how tokens are represented conceptually.]
-
-## 2. Persistence Constraints
-[List the strict operational rules for writing to local/session context safely.]
-
-## 3. Targeted Code Modifications (Diff Rules)
-[Provide abstract instructions on how code changes to token components must be presented as precise diff blocks with zero conversational overhead.]
-
-also maintain prompt history on every req
+1. Short-form responses only.
+2. No conversational filler or explanations.
+3. Provide only the diff or the specific function modified.
+4. Do not update secondary files (README, logs, tests) unless requested.
+5. Use compact code style (no excessive whitespace/comments).
 ```
 
 ---
